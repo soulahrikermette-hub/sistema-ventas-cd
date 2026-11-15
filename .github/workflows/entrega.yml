@@ -1,0 +1,33 @@
+name: Entrega continua - Sistema de Ventas
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validar-y-entregar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Ejecutar pruebas
+        run: python -m unittest discover -v
+
+      - name: Preparar entrega
+        run: |
+          mkdir -p entrega
+          cp ventas.py entrega/
+
+      - name: Guardar artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: sistema-ventas
+          path: entrega/
